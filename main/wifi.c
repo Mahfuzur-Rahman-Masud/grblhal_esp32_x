@@ -249,7 +249,7 @@ static void lwIPHostTimerHandler (void *arg)
 
 #if WEBSOCKET_C_ENABLE
     if(services.ws_client)
-        ws_c_poll();
+        ws_client_poll();
 #endif
 
 
@@ -276,7 +276,7 @@ static void start_services (bool start_ssdp)
 
 #if WEBSOCKET_C_ENABLE
     if(network.services.ws_client && !services.ws_client)
-        services.ws_client = ws_c_init();
+        services.ws_client = ws_client_init();
 #endif
 
 #if FTP_ENABLE
@@ -359,7 +359,7 @@ static void stop_services (void)
 
 #if WEBSOCKET_C_ENABLE
     if(running.ws_client)
-        ws_c_stop();
+        ws_client_stop();
 #endif
 
 
@@ -487,7 +487,7 @@ static void wifi_event_handler (void *arg, esp_event_base_t event_base, int32_t 
 #endif
 
 #if WEBSOCKET_C_ENABLE
-            ws_c_stop();
+            ws_client_stop();
 #endif
 
 
@@ -515,7 +515,7 @@ static void wifi_event_handler (void *arg, esp_event_base_t event_base, int32_t 
 #endif
 
 #if WEBSOCKET_C_ENABLE
-            ws_c_stop();
+            ws_client_stop();
 #endif
 
             protocol_enqueue_foreground_task(report_plain, "WIFI STA DISCONNECTED");

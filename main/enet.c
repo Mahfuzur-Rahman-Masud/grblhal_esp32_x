@@ -184,7 +184,7 @@ static void lwIPHostTimerHandler (void *arg)
 
 #if WEBSOCKET_C_ENABLE
     if(services.websocket)
-        ws_c_poll();
+        ws_client_poll();
 #endif
 
 #if FTP_ENABLE
