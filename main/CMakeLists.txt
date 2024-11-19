@@ -161,6 +161,7 @@ set(NETWORKING_SOURCE
  networking/http_upload.c
  networking/telnetd.c
  networking/websocketd.c
+ networking/ws_client.c
  networking/base64.c
  networking/sha1.c
  networking/urlencode.c

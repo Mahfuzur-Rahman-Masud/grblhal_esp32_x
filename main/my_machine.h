@@ -63,7 +63,7 @@
 //#define MODBUS_ENABLE           1 // Set to 1 for auto direction, 2 for direction signal on auxillary output pin.
 //#define WEBUI_ENABLE            3 // Enable ESP3D-WEBUI plugin along with networking and SD card plugins.
 //#define WEBUI_AUTH_ENABLE       1 // Enable ESP3D-WEBUI authentication.
-//#define WIFI_ENABLE             1 //
+#define WIFI_ENABLE             1 //
 //#define WIFI_SOFTAP             1 // Use Soft AP mode for WiFi.
 //#define ETHERNET_ENABLE         1 // Ethernet streaming. Uses networking plugin.
 //#define BLUETOOTH_ENABLE        1 // Set to 1 for native radio, 2 for HC-05 module.
@@ -121,7 +121,9 @@
 
 #if WIFI_ENABLE || ETHERNET_ENABLE || WEBUI_ENABLE
 #define TELNET_ENABLE         1 // Telnet daemon - requires WiFi streaming enabled.
-//#define WEBSOCKET_ENABLE      1 // Websocket daemon - requires WiFi streaming enabled.
+#define WEBSOCKET_ENABLE      1 // Websocket daemon - requires WiFi streaming enabled.
+#define WEBSOCKET_C_ENABLE    1 // Websocket client
+
 //#define MDNS_ENABLE           0 // mDNS daemon. Do NOT enable here, enable in CMakeLists.txt!
 //#define SSDP_ENABLE           1 // SSDP daemon - requires HTTP enabled.
 //#define MQTT_ENABLE           1 // MQTT client API, only enable if needed by plugin code.

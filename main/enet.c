@@ -181,6 +181,12 @@ static void lwIPHostTimerHandler (void *arg)
     if(services.websocket)
         websocketd_poll();
 #endif
+
+#if WEBSOCKET_C_ENABLE
+    if(services.websocket)
+        ws_c_poll();
+#endif
+
 #if FTP_ENABLE
     if(services.ftp)
         ftpd_poll();
@@ -197,6 +203,13 @@ static void start_services (void)
     if(network.services.websocket && !services.websocket)
         services.websocket = websocketd_init(network.websocket_port == 0 ? NETWORK_WEBSOCKET_PORT : network.websocket_port);
 #endif
+
+
+#if WEBSOCKET_C_ENABLE
+    if(network.services.websocket && !services.websocket)
+        services.websocket = websocketd_init(network.websocket_port == 0 ? NETWORK_WEBSOCKET_PORT : network.websocket_port);
+#endif
+
 #if FTP_ENABLE
     if(network.services.ftp && !services.ftp)
         services.ftp = ftpd_init(network.ftp_port == 0 ? NETWORK_FTP_PORT : network.ftp_port);

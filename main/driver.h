@@ -87,7 +87,7 @@ static const DRAM_ATTR float FZERO = 0.0f;
 
 // end configuration
 
-#if !(WIFI_ENABLE || ETHERNET_ENABLE) && (HTTP_ENABLE || TELNET_ENABLE || WEBSOCKET_ENABLE || FTP_ENABLE)
+#if !(WIFI_ENABLE || ETHERNET_ENABLE) && (HTTP_ENABLE || TELNET_ENABLE || WEBSOCKET_ENABLE || WEBSOCKET_C_ENABLE || FTP_ENABLE)
 #error "Networking protocols requires networking enabled!"
 #endif
 

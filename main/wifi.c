@@ -230,7 +230,7 @@ network_info_t *networking_get_info (void)
     return &info;
 }
 
-#if TELNET_ENABLE || WEBSOCKET_ENABLE || FTP_ENABLE
+#if TELNET_ENABLE || WEBSOCKET_ENABLE  || WEBSOCKET_C_ENABLE || FTP_ENABLE
 
 static void lwIPHostTimerHandler (void *arg)
 {
@@ -245,6 +245,14 @@ static void lwIPHostTimerHandler (void *arg)
     if(services.websocket)
         websocketd_poll();
 #endif
+
+
+#if WEBSOCKET_C_ENABLE
+    if(services.ws_client)
+        ws_c_poll();
+#endif
+
+
 #if FTP_ENABLE
     if(services.ftp)
         ftpd_poll();
@@ -263,6 +271,12 @@ static void start_services (bool start_ssdp)
 #if WEBSOCKET_ENABLE
     if(network.services.websocket && !services.websocket)
         services.websocket = websocketd_init(network.websocket_port);
+#endif
+
+
+#if WEBSOCKET_C_ENABLE
+    if(network.services.ws_client && !services.ws_client)
+        services.ws_client = ws_c_init();
 #endif
 
 #if FTP_ENABLE
@@ -318,7 +332,7 @@ static void start_services (bool start_ssdp)
         mqtt_connect(&network.mqtt, networking_get_info()->mqtt_client_id);
 #endif
 
-#if TELNET_ENABLE || WEBSOCKET_ENABLE || FTP_ENABLE
+#if TELNET_ENABLE || WEBSOCKET_ENABLE   || WEBSOCKET_C_ENABLE || FTP_ENABLE
     sys_timeout(STREAM_POLL_INTERVAL, lwIPHostTimerHandler, NULL);
 #endif
 }
@@ -342,6 +356,13 @@ static void stop_services (void)
     if(running.websocket)
         websocketd_stop();
 #endif
+
+#if WEBSOCKET_C_ENABLE
+    if(running.ws_client)
+        ws_c_stop();
+#endif
+
+
 #if MDNS_ENABLE
     if(running.mdns)
         mdns_free();
@@ -464,6 +485,12 @@ static void wifi_event_handler (void *arg, esp_event_base_t event_base, int32_t 
 #if WEBSOCKET_ENABLE
             websocketd_close_connections();
 #endif
+
+#if WEBSOCKET_C_ENABLE
+            ws_c_stop();
+#endif
+
+
             if(xEventGroupGetBits(wifi_event_group) & APSTA_BIT)
                 wifi_ap_scan();
 #if SSDP_ENABLE
@@ -486,6 +513,11 @@ static void wifi_event_handler (void *arg, esp_event_base_t event_base, int32_t 
 #if WEBSOCKET_ENABLE
             websocketd_close_connections();
 #endif
+
+#if WEBSOCKET_C_ENABLE
+            ws_c_stop();
+#endif
+
             protocol_enqueue_foreground_task(report_plain, "WIFI STA DISCONNECTED");
             memset(&wifi_sta_config, 0, sizeof(wifi_config_t));
             esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_sta_config);
@@ -872,6 +904,8 @@ static const setting_detail_t ethernet_settings[] = {
 #if WEBSOCKET_ENABLE
     { Setting_WebSocketPort3, Group_Networking, "Websocket port", NULL, Format_Int16, "####0", "1", "65535", Setting_NonCoreFn, wifi_set_int, wifi_get_int, NULL, { .reboot_required = On } },
 #endif
+
+
 #if MQTT_ENABLE
     { Setting_MQTTBrokerIpAddress, Group_Networking, "MQTT broker IP Address", NULL, Format_IPv4, NULL, NULL, NULL, Setting_NonCoreFn, wifi_set_ip, wifi_get_ip, NULL, { .reboot_required = On } },
     { Setting_MQTTBrokerPort, Group_Networking, "MQTT broker port", NULL, Format_Int16, "####0", "1", "65535", Setting_NonCore, &wifi.sta.network.mqtt.port, NULL, NULL, { .reboot_required = On } },
